@@ -1,0 +1,275 @@
+$SIMULATION = s.task.sumoCup(duration = 45)
+
+$VS_SELF = ea.f.cached(of = ds.f.selfBiSimulator(
+  of = ea.f.solution();
+  simulation = $SIMULATION
+))
+
+$VS_OPPONENT = ea.f.cached(of = ds.f.opponentBiSimulator(
+  of = ea.f.solution();
+  opponent = m.supplier(of = s.a.dummyBox());
+  simulation = $SIMULATION
+))
+
+$MAPPER = er.m.bodyBrainHomoDistributedVSR(
+  w = 8;
+  h = 8;
+  sensors = [s.s.a(); s.s.ar(); s.s.rv(a = 0); s.s.rv(a = 90); s.s.d(r = 5)];
+  of = ea.m.pair(
+    of = ea.m.splitter();
+    first = ea.m.dsToFixedGrid(negItem = s.a.vsr.voxel(type = none); posItem = s.a.vsr.voxel(type = soft));
+    second = ea.m.steppedNds(of = ea.m.dsToNpnds(npnds = ds.num.mlp(innerLayerRatio = 2; nOfInnerLayers = 2)); stepT = 0.2)
+  )
+)
+
+$BODY_DESCRIPTORS = [
+  ea.s.me.d.descriptor(f = f.gridCount(of = s.f.vsrBody(of = ea.f.supplied(of = ea.f.solution()))); min = 1; max = 16; nOfBins = 8);
+  ea.s.me.d.descriptor(f = f.gridElongation(of = s.f.vsrBody(of = ea.f.supplied(of = ea.f.solution()))); min = 0; max = 1; nOfBins = 8)
+]
+
+$THRESHOLD = 0.5
+$NEG_THRESHOLD = -0.5
+
+$BRAIN_EXTRACTOR = ds.f.inner(of = f.first(of = s.f.numBrains(of = ea.f.supplied(of = ea.f.solution()))))
+
+$BRAIN_DESCRIPTORS = [
+  ea.s.me.d.descriptor(
+    f = f.mathOp(
+      op = divide;
+      args = [
+        f.size(of = f.filter(
+          of = f.flat(of = f.nTh(of = ds.f.weights(of = $BRAIN_EXTRACTOR); n = 0));
+          condition = predicate.all(conditions = [predicate.lt(t = $THRESHOLD); predicate.gt(t = $NEG_THRESHOLD)])
+        ));
+        f.size(
+          of = f.flat(of = f.nTh(of = ds.f.weights(of = $BRAIN_EXTRACTOR); n = 0))
+        )
+      ]
+    );
+    min = 0.0;
+    max = 1.0;
+    nOfBins = 8
+  );
+  ea.s.me.d.descriptor(
+    f = f.mathOp(
+      op = divide;
+      args = [
+        f.size(of = f.filter(
+          of = f.flat(of = f.nTh(of = ds.f.weights(of = $BRAIN_EXTRACTOR); n = 1));
+          condition = predicate.all(conditions = [predicate.lt(t = $THRESHOLD); predicate.gt(t = $NEG_THRESHOLD)])
+        ));
+        f.size(
+          of = f.flat(of = f.nTh(of = ds.f.weights(of = $BRAIN_EXTRACTOR); n = 1))
+        )
+      ]
+    );
+    min = 0.0;
+    max = 1.0;
+    nOfBins = 8
+  )
+]
+
+ea.experiment(
+  runs =
+    (randomGenerator = (seed = [1:1:10]) * [m.defaultRG()]) *
+    (solver = (stop = [ea.sc.nOfQualityEvaluations(n = 30000)]) * [
+      ea.s.biGa(
+        name = "bi-ga-1-ann";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        opponentsSelector = ea.misc.randomSelector(nOfOpponents = 1);
+        fitnessAggregator = f.avg()
+      );
+      ea.s.biGa(
+        name = "bi-ga-2-ann";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        opponentsSelector = ea.misc.randomSelector(nOfOpponents = 2);
+        fitnessAggregator = f.avg()
+      );
+
+      ea.s.biMapElites(
+        name = "bi-me-random1-ann-bodyD";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BODY_DESCRIPTORS;
+        opponentsSelector = ea.misc.randomMESelector(nOfOpponents = 1);
+        fitnessAggregator = f.avg()
+      );
+      ea.s.biMapElites(
+        name = "bi-me-random2-ann-bodyD";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BODY_DESCRIPTORS;
+        opponentsSelector = ea.misc.randomMESelector(nOfOpponents = 2);
+        fitnessAggregator = f.avg()
+      );
+
+      ea.s.biMapElites(
+        name = "bi-me-random1-ann-brainD";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BRAIN_DESCRIPTORS;
+        opponentsSelector = ea.misc.randomMESelector(nOfOpponents = 1);
+        fitnessAggregator = f.avg()
+      );
+      ea.s.biMapElites(
+        name = "bi-me-random2-ann-brainD";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BRAIN_DESCRIPTORS;
+        opponentsSelector = ea.misc.randomMESelector(nOfOpponents = 2);
+        fitnessAggregator = f.avg()
+      );
+
+      ea.s.biMapElites(
+        name = "bi-me-farthest1-ann-bodyD";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BODY_DESCRIPTORS;
+        opponentsSelector = ea.misc.farthestMESelector(nOfOpponents = 1);
+        fitnessAggregator = f.avg()
+      );
+      ea.s.biMapElites(
+        name = "bi-me-farthest2-ann-bodyD";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BODY_DESCRIPTORS;
+        opponentsSelector = ea.misc.farthestMESelector(nOfOpponents = 2);
+        fitnessAggregator = f.avg()
+      );
+
+      ea.s.biMapElites(
+        name = "bi-me-farthest1-ann-brainD";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BRAIN_DESCRIPTORS;
+        opponentsSelector = ea.misc.farthestMESelector(nOfOpponents = 1);
+        fitnessAggregator = f.avg()
+      );
+      ea.s.biMapElites(
+        name = "bi-me-farthest2-ann-brainD";
+        fitnessReducer = ea.misc.lossyAverage();
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BRAIN_DESCRIPTORS;
+        opponentsSelector = ea.misc.farthestMESelector(nOfOpponents = 2);
+        fitnessAggregator = f.avg()
+      );
+
+      ea.s.ga(
+        name = "self-ga-ann";
+        representation = ea.r.doubleString();
+        mapper = $MAPPER
+      );
+      ea.s.mapElites(
+        name = "self-me-ann-bodyD";
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BODY_DESCRIPTORS
+      );
+      ea.s.mapElites(
+        name = "self-me-ann-brainD";
+        representation = ea.r.doubleString();
+        mapper = $MAPPER;
+        descriptors = $BRAIN_DESCRIPTORS
+      )
+    ]) *
+    (problem = [ea.p.biSimToBqb(
+      simulation = $SIMULATION;
+      qFunction1 = s.f.outcome.sumoShiftedScoreDifference1();
+      qFunction2 = s.f.outcome.sumoShiftedScoreDifference2();
+      type = maximize
+    )]) *
+    [ea.run()];
+
+  listeners = [
+    ea.l.console(
+      functions = [
+        ea.f.timestamp();
+        ea.f.size(of = ea.f.genotype(of = ea.f.best()); format = "%3d");
+        ea.f.quality(of = ea.f.best(); format = "%4.1f")
+      ]
+    );
+    ea.l.bestCsv(
+      path = "./results/{name}/{startTime}/all.csv";
+      runFunctions = [
+        ea.f.runKey(key = "run.problem.simulation.environment");
+        ea.f.runKey(key = "run.solver.mapper")
+      ];
+      functions = [
+        ea.f.timestamp();
+	    ea.f.quality(of = ea.f.best(); format = "%4.1f");
+	    s.f.outcome.sumoShiftedScoreDifference1(of = f.composition(of = ea.f.best(); then = $VS_SELF); format = "%4.1f");
+	    s.f.outcome.sumoShiftedScoreDifference1(of = f.composition(of = ea.f.best(); then = $VS_OPPONENT); format = "%4.1f")
+      ]
+    );
+    ea.l.saveLastPopulationForRun(
+      path = "./results/{name}/{startTime}/last-pop-{run.solver.name}-{run.randomGenerator.seed:%04d}"
+    );
+    ea.l.savePlotAndCsvForRun(
+      path = "./results/{name}/{startTime}/best-q.svg";
+      plot = ea.plot.multi.quality(x = ea.f.nOfEvals());
+      overwrite = true;
+      type = svg
+    );
+    ea.l.savePlotAndCsvForRun(
+      deferred = true;
+      path = "./results/{name}/{startTime}/best-vs-self.svg";
+      plot = ea.plot.multi.quality(x = ea.f.nOfEvals(); y = s.f.outcome.sumoShiftedScoreDifference1(of = f.composition(of = ea.f.best(); then = $VS_SELF)));
+      overwrite = true;
+      type = svg
+    );
+    ea.l.savePlotAndCsvForRun(
+      deferred = true;
+      path = "./results/{name}/{startTime}/best-vs-opponent.svg";
+      plot = ea.plot.multi.quality(x = ea.f.nOfEvals(); y = s.f.outcome.sumoShiftedScoreDifference1(of = f.composition(of = ea.f.best(); then = $VS_OPPONENT)));
+      overwrite = true;
+      type = svg
+    );
+    ea.l.savePlotAndCsvForRun(
+      path = "./results/{name}/{startTime}/avg-q.svg";
+      plot = ea.plot.multi.xyExp(x = ea.f.nOfEvals(); y = f.avg(of = f.each(mapF = ea.f.quality(); of = ea.f.all())));
+      overwrite = true;
+      type = svg
+    );
+    ea.l.savePlotAndCsvForRun(
+      path = "./results/{name}/{startTime}/archive-{run.problem.name}-{run.solver.name}-{run.randomGenerator.seed:%03d}.svg";
+      plot = ea.plot.single.me();
+      condition = predicate.matches(f = ea.f.runKey(key = "run.solver.name"); regex = ".*-me-.*");
+      type = svg
+    );
+    ea.l.bestCsv(
+        path = "./results/{name}/{startTime}/final-best.csv";
+        runFunctions = [
+          ea.f.runKey(key = "run.problem.simulation.environment");
+          ea.f.runKey(key = "run.solver.mapper")
+        ];
+        functions = [
+          ea.f.timestamp();
+          f.toBase64(of = ea.f.genotype(of = ea.f.best()))
+        ];
+        onlyLast = true
+    );
+    ea.l.saveForRun(
+      of = ea.acc.lastBest();
+      processor = f.composition(
+        of = f.pairerFirst(of = ea.f.solution(); second = m.supplier(of = s.a.dummyBox()));
+        then = sim.biTaskVideoBuilder(
+          drawer = sim.drawer(framer = sim.staticFramer(minX = 4; maxX = 36; minY = 3; maxY = 24); actions = true);
+          task = $SIMULATION
+        )
+      );
+      path = "./results/{name}/{startTime}/best-vs-box-{run.solver.name}-{run.randomGenerator.seed:%04d}.mp4"
+    )
+  ]
+)
