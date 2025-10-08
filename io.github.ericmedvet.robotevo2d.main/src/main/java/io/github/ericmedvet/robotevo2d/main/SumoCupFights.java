@@ -162,15 +162,17 @@ public class SumoCupFights {
 
       int numOpponents = opponentNames.size();
       double[][] totalScore1 = new double[numOpponents][numOpponents];
+      double[][] winCounts = new double[numOpponents][numOpponents];
       int[][] matchCounts = new int[numOpponents][numOpponents];
-      final Object matrixLock = new Object();
 
       Map<String, Integer> winsMap = new HashMap<>();
       Map<String, Integer> matchesPlayed = new HashMap<>();
+      Map<String, Double> scoresMap = new HashMap<>();
 
       for (String name : opponentNames) {
         winsMap.put(name, 0);
         matchesPlayed.put(name, 0);
+        scoresMap.put(name, 0.0);
       }
 
       Supplier<Engine> engineSupplier = () -> ServiceLoader.load(Engine.class).findFirst().orElseThrow();
@@ -192,8 +194,8 @@ public class SumoCupFights {
               OnlineVideoBuilder ovb = new OnlineVideoBuilder(
                   400,
                   300,
-                  0,
-                  15,
+                  30,
+                  45,
                   24,
                   VideoUtils.EncoderFacility.FFMPEG_SMALL,
                   new File(
@@ -237,9 +239,16 @@ public class SumoCupFights {
           matchesPlayed.put(result.opponent2.first(), matchesPlayed.get(result.opponent2.first()) + 1);
           if (result.fitness1 > 0) {
             winsMap.put(result.opponent1.first(), winsMap.get(result.opponent1.first()) + 1);
+            winCounts[index1][index2] += 1;
           } else if (result.fitness1 < 0) {
             winsMap.put(result.opponent2.first(), winsMap.get(result.opponent2.first()) + 1);
+            winCounts[index2][index1] += 1;
+          } else {
+            winCounts[index1][index2] += 0.5;
+            winCounts[index2][index1] += 0.5;
           }
+          scoresMap.put(result.opponent1.first(), scoresMap.get(result.opponent1.first()) + result.fitness1);
+          scoresMap.put(result.opponent2.first(), scoresMap.get(result.opponent2.first()) - result.fitness1);
           totalScore1[index1][index2] += result.fitness1;
           matchCounts[index1][index2] += 1;
         } catch (InterruptedException | ExecutionException e) {
@@ -263,9 +272,26 @@ public class SumoCupFights {
         int played = matchesPlayed.get(name);
         rankingLines.add(String.format("%s;%d;%d", name, wins, played));
       }
-      String rankingPath = folder + "ranking.csv";
+      String rankingPath = folder + "ranking-wins.csv";
       Files.write(Paths.get(rankingPath), rankingLines);
-      System.out.println("Ranking saved in: " + rankingPath);
+      System.out.println("Wins ranking saved in: " + rankingPath);
+
+      // prepare ranking based on cumulative score
+      List<String> rankingScoreLines = new ArrayList<>();
+      rankingScoreLines.add("Name;Cumulative-Score;Matches");
+      List<String> finalScoreNames = new ArrayList<>(opponentNames);
+      finalScoreNames.sort(
+          Comparator.comparingDouble(name -> -1.0 * scoresMap.get(name) / (double) matchesPlayed.get(name))
+      );
+      for (String name : finalScoreNames) {
+        double score = scoresMap.get(name);
+        int played = matchesPlayed.get(name);
+        rankingScoreLines.add(String.format("%s;%f;%d", name, score, played));
+      }
+      String rankingScorePath = folder + "ranking-cumulative-score.csv";
+      Files.write(Paths.get(rankingScorePath), rankingScoreLines);
+      System.out.println("Cumulative scores ranking saved in: " + rankingScorePath);
+
 
       // Build scoreMatrix strings and write CSVs similar to PongFights
       String[][] scoreMatrix = new String[numOpponents][numOpponents];
@@ -281,26 +307,33 @@ public class SumoCupFights {
       }
 
       // write scores-formula.csv and optionally matches-counts.csv
-      try (BufferedWriter scoreWriter = Files.newBufferedWriter(
-          Paths.get(folder + "scores-formula.csv")
-      ); BufferedWriter countsWriter = Files.newBufferedWriter(Paths.get(folder + "matches-counts.csv"))) {
+      try (
+           BufferedWriter scoreWriter = Files.newBufferedWriter(
+               Paths.get(folder + "scores-matrix.csv")
+           ); BufferedWriter countsWriter = Files.newBufferedWriter(
+               Paths.get(folder + "matches-count-matrix.csv")
+           ); BufferedWriter winsWriter = Files.newBufferedWriter(Paths.get(folder + "wins-count.csv"))
+      ) {
         // header
         scoreWriter.write(";" + String.join(";", opponentNames) + "\n");
         countsWriter.write(";" + String.join(";", opponentNames) + "\n");
+        winsWriter.write(";" + String.join(";", opponentNames) + "\n");
         for (int i = 0; i < numOpponents; i++) {
           scoreWriter.write(opponentNames.get(i));
           countsWriter.write(opponentNames.get(i));
+          winsWriter.write(opponentNames.get(i));
           for (int j = 0; j < numOpponents; j++) {
             scoreWriter.write(";" + scoreMatrix[i][j]);
             countsWriter.write(";" + matchCounts[i][j]);
+            winsWriter.write(";" + winCounts[i][j]);
           }
           scoreWriter.write("\n");
           countsWriter.write("\n");
+          winsWriter.write("\n");
         }
       }
 
-      System.out.println("Scores matrix and match counts saved in folder: " + folder);
-
+      System.out.println("Scores matrix, matches count, and wins count saved in folder: " + folder);
     }
   }
 }

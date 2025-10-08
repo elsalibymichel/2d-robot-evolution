@@ -1,3 +1,39 @@
+## Package `dynamicalSystem.arena`
+
+Aliases: `ds.arena`, `dynSys.arena`, `dynamicalSystem.arena`
+
+### Builder `dynamicalSystem.arena.fromString()`
+
+`ds.arena.fromString(name; s; l; diagonal; emptyChar; obstacleChar; startChar; targetChar; separatorChar)`
+
+| Param | Type | Default | Java type |
+| --- | --- | --- | --- |
+| `name` | s | `custom` | <code><abbr title="java.lang.String">String</abbr></code> |
+| `s` | s |  | <code><abbr title="java.lang.String">String</abbr></code> |
+| `l` | d | `0.1` | <code>double</code> |
+| `diagonal` | b | `false` | <code>boolean</code> |
+| `emptyChar` | s | ` ` | <code><abbr title="java.lang.String">String</abbr></code> |
+| `obstacleChar` | s | `w` | <code><abbr title="java.lang.String">String</abbr></code> |
+| `startChar` | s | `s` | <code><abbr title="java.lang.String">String</abbr></code> |
+| `targetChar` | s | `t` | <code><abbr title="java.lang.String">String</abbr></code> |
+| `separatorChar` | s | `|` | <code><abbr title="java.lang.String">String</abbr></code> |
+
+Produces <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.NavigationArena">NavigationArena</abbr></code>; built from `io.github.ericmedvet.jsdynsym.buildable.builders.Arenas.fromString()` by robotevo2d-main:1.5.1-SNAPSHOT
+
+### Builder `dynamicalSystem.arena.prepared()`
+
+`ds.arena.prepared(name; initialRobotXRange; initialRobotYRange; targetXRange; targetYRange)`
+
+| Param | Type | Default | Java type |
+| --- | --- | --- | --- |
+| `name` | e | `EMPTY` | <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.Arena$Prepared">Arena$Prepared</abbr></code> |
+| `initialRobotXRange` | npm | `m.range(min = 0.45; max = 0.55)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
+| `initialRobotYRange` | npm | `m.range(min = 0.8; max = 0.85)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
+| `targetXRange` | npm | `m.range(min = 0.5; max = 0.5)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
+| `targetYRange` | npm | `m.range(min = 0.15; max = 0.15)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
+
+Produces <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.NavigationArena">NavigationArena</abbr></code>; built from `io.github.ericmedvet.jsdynsym.buildable.builders.Arenas.prepared()` by robotevo2d-main:1.5.1-SNAPSHOT
+
 ## Package `dynamicalSystem.biAgentTask`
 
 Aliases: `ds.baTask`, `ds.bat`, `ds.biAgentTask`, `dynSys.baTask`, `dynSys.bat`, `dynSys.biAgentTask`, `dynamicalSystem.baTask`, `dynamicalSystem.bat`, `dynamicalSystem.biAgentTask`
@@ -54,23 +90,19 @@ Aliases: `ds.e`, `ds.env`, `ds.environment`, `dynSys.e`, `dynSys.env`, `dynSys.e
 
 ### Builder `dynamicalSystem.environment.navigation()`
 
-`ds.e.navigation(name; initialRobotXRange; initialRobotYRange; initialRobotDirectionRange; targetXRange; targetYRange; robotRadius; robotMaxV; sensorsAngleRange; nOfSensors; sensorRange; senseTarget; arena; rescaleInput; randomGenerator)`
+`ds.e.navigation(name; initialRobotDirectionRange; robotRadius; robotMaxV; sensorsAngleRange; nOfSensors; sensorRange; senseTarget; arena; rescaleInput; randomGenerator)`
 
 | Param | Type | Default | Java type |
 | --- | --- | --- | --- |
-| `name` | s | interpolate `nav-{arena}` | <code><abbr title="java.lang.String">String</abbr></code> |
-| `initialRobotXRange` | npm | `m.range(min = 0.45; max = 0.55)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `initialRobotYRange` | npm | `m.range(min = 0.8; max = 0.85)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
+| `name` | s | interpolate `nav-{arena.name}` | <code><abbr title="java.lang.String">String</abbr></code> |
 | `initialRobotDirectionRange` | npm | `m.range(min = 0; max = 0)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `targetXRange` | npm | `m.range(min = 0.5; max = 0.5)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `targetYRange` | npm | `m.range(min = 0.15; max = 0.15)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
 | `robotRadius` | d | `0.05` | <code>double</code> |
 | `robotMaxV` | d | `0.01` | <code>double</code> |
 | `sensorsAngleRange` | npm | `m.range(min = -1.57; max = 1.57)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
 | `nOfSensors` | i | `5` | <code>int</code> |
 | `sensorRange` | d | `0.5` | <code>double</code> |
 | `senseTarget` | b | `true` | <code>boolean</code> |
-| `arena` | e | `EMPTY` | <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.Arena$Prepared">Arena$Prepared</abbr></code> |
+| `arena` | npm | `ds.arena.prepared()` | <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.NavigationArena">NavigationArena</abbr></code> |
 | `rescaleInput` | b | `true` | <code>boolean</code> |
 | `randomGenerator` | npm | `m.defaultRG()` | <code><abbr title="java.util.random.RandomGenerator">RandomGenerator</abbr></code> |
 
@@ -78,18 +110,14 @@ Produces <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.Nav
 
 ### Builder `dynamicalSystem.environment.pointNavigation()`
 
-`ds.e.pointNavigation(name; initialRobotXRange; initialRobotYRange; targetXRange; targetYRange; robotMaxV; collisionBlock; arena; rescaleInput; randomGenerator)`
+`ds.e.pointNavigation(name; robotMaxV; collisionBlock; arena; rescaleInput; randomGenerator)`
 
 | Param | Type | Default | Java type |
 | --- | --- | --- | --- |
 | `name` | s | interpolate `nav-{arena}` | <code><abbr title="java.lang.String">String</abbr></code> |
-| `initialRobotXRange` | npm | `m.range(min = 0.45; max = 0.55)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `initialRobotYRange` | npm | `m.range(min = 0.8; max = 0.85)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `targetXRange` | npm | `m.range(min = 0.5; max = 0.5)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `targetYRange` | npm | `m.range(min = 0.15; max = 0.15)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
 | `robotMaxV` | d | `0.01` | <code>double</code> |
 | `collisionBlock` | d | `0.005` | <code>double</code> |
-| `arena` | e | `EMPTY` | <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.Arena$Prepared">Arena$Prepared</abbr></code> |
+| `arena` | npm |  | <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.NavigationArena">NavigationArena</abbr></code> |
 | `rescaleInput` | b | `true` | <code>boolean</code> |
 | `randomGenerator` | npm | `m.defaultRG()` | <code><abbr title="java.util.random.RandomGenerator">RandomGenerator</abbr></code> |
 
@@ -426,11 +454,10 @@ Produces <code><abbr title="io.github.ericmedvet.jnb.datastructure.NamedFunction
 
 ### Builder `dynamicalSystem.function.weights()`
 
-`ds.f.weights(indexOfLayer; of; format)`
+`ds.f.weights(of; format)`
 
 | Param | Type | Default | Java type |
 | --- | --- | --- | --- |
-| `indexOfLayer` | i | `0` | <code>int</code> |
 | `of` | npm | `f.identity()` | <code><abbr title="java.util.function.Function">Function</abbr>&lt;X, <abbr title="io.github.ericmedvet.jsdynsym.core.numerical.ann.MultiLayerPerceptron">MultiLayerPerceptron</abbr>&gt;</code> |
 | `format` | s | `%s` | <code><abbr title="java.lang.String">String</abbr></code> |
 
@@ -559,22 +586,18 @@ Aliases: `ds.s`, `ds.sim`, `ds.simulation`, `dynSys.s`, `dynSys.sim`, `dynSys.si
 
 ### Builder `dynamicalSystem.simulation.variableSensorPositionsNavigation()`
 
-`ds.s.variableSensorPositionsNavigation(name; initialRobotXRange; initialRobotYRange; initialRobotDirectionRange; targetXRange; targetYRange; robotRadius; robotMaxV; nOfSensors; sensorRange; senseTarget; arena; rescaleInput; sortAngles; randomGenerator; dT; initialT; finalT)`
+`ds.s.variableSensorPositionsNavigation(name; initialRobotDirectionRange; robotRadius; robotMaxV; nOfSensors; sensorRange; senseTarget; arena; rescaleInput; sortAngles; randomGenerator; dT; initialT; finalT)`
 
 | Param | Type | Default | Java type |
 | --- | --- | --- | --- |
 | `name` | s | interpolate `vs[{nOfSensors}]-nav-{arena}` | <code><abbr title="java.lang.String">String</abbr></code> |
-| `initialRobotXRange` | npm | `m.range(min = 0.45; max = 0.55)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `initialRobotYRange` | npm | `m.range(min = 0.8; max = 0.85)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
 | `initialRobotDirectionRange` | npm | `m.range(min = 0; max = 0)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `targetXRange` | npm | `m.range(min = 0.5; max = 0.5)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
-| `targetYRange` | npm | `m.range(min = 0.15; max = 0.15)` | <code><abbr title="io.github.ericmedvet.jnb.datastructure.DoubleRange">DoubleRange</abbr></code> |
 | `robotRadius` | d | `0.05` | <code>double</code> |
 | `robotMaxV` | d | `0.01` | <code>double</code> |
 | `nOfSensors` | i | `5` | <code>int</code> |
 | `sensorRange` | d | `0.5` | <code>double</code> |
 | `senseTarget` | b | `true` | <code>boolean</code> |
-| `arena` | e | `EMPTY` | <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.Arena$Prepared">Arena$Prepared</abbr></code> |
+| `arena` | npm | `ds.arena.prepared()` | <code><abbr title="io.github.ericmedvet.jsdynsym.control.navigation.NavigationArena">NavigationArena</abbr></code> |
 | `rescaleInput` | b | `true` | <code>boolean</code> |
 | `sortAngles` | b | `true` | <code>boolean</code> |
 | `randomGenerator` | npm | `m.defaultRG()` | <code><abbr title="java.util.random.RandomGenerator">RandomGenerator</abbr></code> |
@@ -1528,7 +1551,7 @@ Produces <code><abbr title="io.github.ericmedvet.jnb.datastructure.NamedFunction
 
 ### Builder `ea.function.toImage()`
 
-`ea.f.toImage(of; image; w; h)`
+`ea.f.toImage(of; image; w; h; type)`
 
 | Param | Type | Default | Java type |
 | --- | --- | --- | --- |
@@ -1536,8 +1559,9 @@ Produces <code><abbr title="io.github.ericmedvet.jnb.datastructure.NamedFunction
 | `image` | npm |  | <code><abbr title="io.github.ericmedvet.jviz.core.drawer.ImageBuilder">ImageBuilder</abbr>&lt;D&gt;</code> |
 | `w` | i | `-1` | <code>int</code> |
 | `h` | i | `-1` | <code>int</code> |
+| `type` | s | `png` | <code><abbr title="java.lang.String">String</abbr></code> |
 
-Produces <code><abbr title="io.github.ericmedvet.jnb.datastructure.NamedFunction">NamedFunction</abbr>&lt;X, <abbr title="java.awt.image.BufferedImage">BufferedImage</abbr>&gt;</code>; built from `io.github.ericmedvet.jgea.experimenter.builders.Functions.toImage()` by robotevo2d-main:1.5.1-SNAPSHOT
+Produces <code><abbr title="io.github.ericmedvet.jnb.datastructure.NamedFunction">NamedFunction</abbr>&lt;X, <abbr title="java.lang.Object">Object</abbr>&gt;</code>; built from `io.github.ericmedvet.jgea.experimenter.builders.Functions.toImage()` by robotevo2d-main:1.5.1-SNAPSHOT
 
 ### Builder `ea.function.toImagesVideo()`
 
@@ -2453,6 +2477,17 @@ Produces <code><abbr title="java.util.Map$Entry">Map$Entry</abbr>&lt;K, V&gt;</c
 | `nOfOpponents` | i | `1` | <code>int</code> |
 
 Produces <code><abbr title="io.github.ericmedvet.jgea.core.solver.bi.AbstractBiEvolver$OpponentsSelector">AbstractBiEvolver$OpponentsSelector</abbr>&lt;<abbr title="io.github.ericmedvet.jgea.core.solver.mapelites.MEIndividual">MEIndividual</abbr>&lt;G, S, Q&gt;, S, Q, O&gt;</code>; built from `io.github.ericmedvet.jgea.experimenter.builders.Miscs.farthestMESelector()` by robotevo2d-main:1.5.1-SNAPSHOT
+
+### Builder `ea.misc.fromTextFile()`
+
+`ea.misc.fromTextFile(path; f)`
+
+| Param | Type | Default | Java type |
+| --- | --- | --- | --- |
+| `path` | s |  | <code><abbr title="java.lang.String">String</abbr></code> |
+| `f` | npm | `f.identity()` | <code><abbr title="java.util.function.Function">Function</abbr>&lt;<abbr title="java.lang.String">String</abbr>, X&gt;</code> |
+
+Produces <code>X</code>; built from `io.github.ericmedvet.jgea.experimenter.builders.Miscs.fromTextFile()` by robotevo2d-main:1.5.1-SNAPSHOT
 
 ### Builder `ea.misc.imgByName()`
 
@@ -3739,6 +3774,19 @@ Produces <code><abbr title="java.util.function.Function">Function</abbr>&lt;<abb
 | `second` | npm |  | <code><abbr title="java.util.function.Function">Function</abbr>&lt;G2, <abbr title="io.github.ericmedvet.jgea.experimenter.Representation">Representation</abbr>&lt;G2&gt;&gt;</code> |
 
 Produces <code><abbr title="java.util.function.Function">Function</abbr>&lt;<abbr title="io.github.ericmedvet.jnb.datastructure.Pair">Pair</abbr>&lt;G1, G2&gt;, <abbr title="io.github.ericmedvet.jgea.experimenter.Representation">Representation</abbr>&lt;<abbr title="io.github.ericmedvet.jnb.datastructure.Pair">Pair</abbr>&lt;G1, G2&gt;&gt;&gt;</code>; built from `io.github.ericmedvet.jgea.experimenter.builders.Representations.pair()` by robotevo2d-main:1.5.1-SNAPSHOT
+
+### Builder `ea.representation.seeded()`
+
+`ea.r.seeded(of; seeds; seededRate; mutatedRate)`
+
+| Param | Type | Default | Java type |
+| --- | --- | --- | --- |
+| `of` | npm |  | <code><abbr title="java.util.function.Function">Function</abbr>&lt;G, <abbr title="io.github.ericmedvet.jgea.experimenter.Representation">Representation</abbr>&lt;G&gt;&gt;</code> |
+| `seeds` | npm |  | <code><abbr title="java.util.Collection">Collection</abbr>&lt;G&gt;</code> |
+| `seededRate` | d | `0.01` | <code>double</code> |
+| `mutatedRate` | d | `0.49` | <code>double</code> |
+
+Produces <code><abbr title="java.util.function.Function">Function</abbr>&lt;G, <abbr title="io.github.ericmedvet.jgea.experimenter.Representation">Representation</abbr>&lt;G&gt;&gt;</code>; built from `io.github.ericmedvet.jgea.experimenter.builders.Representations.seeded()` by robotevo2d-main:1.5.1-SNAPSHOT
 
 ### Builder `ea.representation.srTree()`
 
@@ -5142,6 +5190,17 @@ Produces <code><abbr title="io.github.ericmedvet.jnb.datastructure.FormattedName
 | `format` | s | `%2d` | <code><abbr title="java.lang.String">String</abbr></code> |
 
 Produces <code><abbr title="io.github.ericmedvet.jnb.datastructure.FormattedNamedFunction">FormattedNamedFunction</abbr>&lt;X, <abbr title="java.lang.Integer">Integer</abbr>&gt;</code>; built from `io.github.ericmedvet.jnb.buildable.Functions.gridW()` by robotevo2d-main:1.5.1-SNAPSHOT
+
+### Builder `function.iApply()`
+
+`f.iApply(iF; of)`
+
+| Param | Type | Default | Java type |
+| --- | --- | --- | --- |
+| `iF` | npm |  | <code><abbr title="java.util.function.Function">Function</abbr>&lt;X, <abbr title="java.util.function.Function">Function</abbr>&lt;T, R&gt;&gt;</code> |
+| `of` | npm | `f.identity()` | <code><abbr title="java.util.function.Function">Function</abbr>&lt;X, T&gt;</code> |
+
+Produces <code><abbr title="io.github.ericmedvet.jnb.datastructure.NamedFunction">NamedFunction</abbr>&lt;X, R&gt;</code>; built from `io.github.ericmedvet.jnb.buildable.Functions.iApply()` by robotevo2d-main:1.5.1-SNAPSHOT
 
 ### Builder `function.iComposition()`
 
