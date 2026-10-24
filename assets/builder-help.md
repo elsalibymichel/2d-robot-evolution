@@ -8022,6 +8022,18 @@ Produces <code><abbr title="java.util.function.Function">Function</abbr>&lt;X, <
 
 Produces <code><abbr title="java.util.function.Function">Function</abbr>&lt;X, <abbr title="java.lang.Double">Double</abbr>&gt;</code>; built from `io.github.ericmedvet.mrsim2d.buildable.builders.OutcomeFunctions.faMaxY()` by robotevo2d-main:1.6.2
 
+### Builder `sim.function.outcome.faSdY()`
+
+`s.f.o.faSdY(transientTime; of; format)`
+
+| Param | Type | Default | Java type |
+| --- | --- | --- | --- |
+| `transientTime` | d | `5.0` | <code>double</code> |
+| `of` | npm | `f.identity()` | <code><abbr title="java.util.function.Function">Function</abbr>&lt;X, <abbr title="io.github.ericmedvet.mrsim2d.core.tasks.AgentsOutcome">AgentsOutcome</abbr>&lt;?&gt;&gt;</code> |
+| `format` | s | `%.2f` | <code><abbr title="java.lang.String">String</abbr></code> |
+
+Produces <code><abbr title="java.util.function.Function">Function</abbr>&lt;X, <abbr title="java.lang.Double">Double</abbr>&gt;</code>; built from `io.github.ericmedvet.mrsim2d.buildable.builders.OutcomeFunctions.faSdY()` by robotevo2d-main:1.6.2
+
 ### Builder `sim.function.outcome.faXDistance()`
 
 `s.f.o.faXDistance(transientTime; of; format)`
@@ -8291,11 +8303,12 @@ Produces <code><abbr title="io.github.ericmedvet.mrsim2d.core.tasks.sumo.Sumo">S
 
 ### Builder `sim.task.sumoCup()`
 
-`s.task.sumoCup(name)`
+`s.task.sumoCup(name; initialXGap)`
 
 | Param | Type | Default | Java type |
 | --- | --- | --- | --- |
 | `name` | s | `sumoCup` | <code><abbr title="java.lang.String">String</abbr></code> |
+| `initialXGap` | d | `7.0` | <code>double</code> |
 
 Produces <code><abbr title="io.github.ericmedvet.mrsim2d.core.tasks.sumo.SumoCup">SumoCup</abbr></code>; built from `io.github.ericmedvet.mrsim2d.buildable.builders.Tasks.sumoCup()` by robotevo2d-main:1.6.2
 
